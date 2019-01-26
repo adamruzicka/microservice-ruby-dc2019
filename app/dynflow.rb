@@ -21,7 +21,7 @@ module Actions
   module RevertBooking
     def revert_run
       id = original_output[:response][:id]
-      post_rest(original_input[:url] + "/#{id}/compensate")
+      post_rest(original_input[:url] + "/#{id}/compensate", :parse_json => false)
     end
   end
 
@@ -70,6 +70,6 @@ end
 
 Thread.new do
   sleep 1
-  ExampleHelper.world.trigger ::Actions::BookTrip, false
+  ExampleHelper.world.trigger ::Actions::BookTrip, true
 end
 ExampleHelper.run_web_console
