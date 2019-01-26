@@ -14,9 +14,9 @@ module Microservice
 
       def enlist_lra
         return unless lra_header
-        lra_resource.put 'http://' + request.env['HTTP_HOST']
+        lra_resource.put base_url
       rescue => e
-        puts "Failed to enlist to saga: #{e.message}"
+	      STDERR.puts "Failed to enlist to saga: #{e.message}"
       end
 
       def complete_lra
@@ -53,17 +53,20 @@ module Microservice
     end
 
     put '/compensate' do
-      Repo.find_lra(lra_header).each do |record|
+      repo.find_lra(lra_header).each do |record|
         record.state = 'revoked'
         Repo.update(record)
       end
     end
 
     put '/complete' do
-      Repo.find_lra(lra_header).each do |record|
+      repo.find_lra(lra_header).each do |record|
         # Do something
       end
+      ''
     end
+
+    get '/status' do; end
 
     get '/:id/status' do
       repo.find(params['id']).to_json
